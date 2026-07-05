@@ -6,6 +6,14 @@ Living document. Newest decisions at the top of the log. Open questions at the b
 
 ## Decision log
 
+### 2026-07-05 — Public repo + GitHub Pages hosting
+
+Repo made public so the free-tier GitHub Pages can host the game at https://sks-balan.github.io/strange-worlds/ — playable from any phone browser. Every push to main runs tests, builds, and deploys via Actions. Doubles as a portfolio piece; revisit visibility if anything sensitive ever lands here.
+
+### 2026-07-05 — No React; plain `.ts`, no JSX
+
+Phaser owns all rendering (single canvas) and the only DOM UI is the `#dialogue` overlay, driven by vanilla code. React would be a second framework managing almost nothing, against the zero-extra-deps rule. Revisit only if out-of-canvas UI grows real complexity (settings, save slots, inventory) — then a React layer may own menus while Phaser owns the world, and only those components become `.tsx`.
+
 ### 2026-07-05 — Portrait orientation (provisional), 390×844 design canvas
 
 Milestone 1 uses a portrait phone canvas with FIT scaling (letterboxed elsewhere). One-handed portrait play fits "playable in short sessions"; revisit if the side-scrolling camera direction demands landscape.
