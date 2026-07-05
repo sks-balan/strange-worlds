@@ -284,6 +284,8 @@ export class BedroomScene extends Phaser.Scene {
       ease: 'Sine.easeIn',
     });
     this.cameras.main.zoomTo(1.25, 1100, 'Sine.easeIn');
+    // NOTE: resetFX so this fadeOut isn't ignored if the fadeIn is still running
+    this.cameras.main.resetFX();
     this.cameras.main.fadeOut(1200, 230, 230, 255);
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
       this.cameras.main.setZoom(1);

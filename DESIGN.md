@@ -6,6 +6,10 @@ Living document. Newest decisions at the top of the log. Open questions at the b
 
 ## Decision log
 
+### 2026-07-05 — Fantasy-world palette: sunset warmth over glowing turquoise water
+
+Themed to the user's reference painting: warm orange/pink sunset sky with a huge pale sun, purple cliffs with sunset-lit edges, autumn-rust foliage on every ledge, and glowing turquoise cascades (soft band + bright core + falling streak particles + mist) into a luminous pool. The girl walks a dark shore strip in the foreground, silhouetted against the water light. The real world (bedroom) intentionally stays dark and desaturated so the portal contrast lands. Palette constants live at the top of `src/scenes/FantasyScene.ts`.
+
 ### 2026-07-05 — Public repo + GitHub Pages hosting
 
 Repo made public so the free-tier GitHub Pages can host the game at https://sks-balan.github.io/strange-worlds/ — playable from any phone browser. Every push to main runs tests, builds, and deploys via Actions. Doubles as a portfolio piece; revisit visibility if anything sensitive ever lands here.

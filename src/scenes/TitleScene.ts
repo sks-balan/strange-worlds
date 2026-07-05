@@ -3,12 +3,15 @@ import { gameState } from '../systems/state';
 import { ensureTextures } from './textures';
 
 export class TitleScene extends Phaser.Scene {
+  private starting = false;
+
   constructor() {
     super('Title');
   }
 
   create(): void {
     ensureTextures(this);
+    this.starting = false;
     const { width, height } = this.scale;
 
     const bg = this.add.graphics();
@@ -68,8 +71,13 @@ export class TitleScene extends Phaser.Scene {
       ease: 'Sine.easeInOut',
     });
 
-    button.once('pointerdown', () => {
+    button.on('pointerdown', () => {
+      if (this.starting) return;
+      this.starting = true;
       const target = gameState.hasSave ? gameState.scene : 'Bedroom';
+      // NOTE: resetFX first — a fadeOut started while the fadeIn is still
+      // running is silently ignored and its completion event never fires
+      this.cameras.main.resetFX();
       this.cameras.main.fadeOut(700, 14, 13, 22);
       this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
         this.scene.start(target);
