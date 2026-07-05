@@ -6,6 +6,18 @@ Living document. Newest decisions at the top of the log. Open questions at the b
 
 ## Decision log
 
+### 2026-07-05 — Portrait orientation (provisional), 390×844 design canvas
+
+Milestone 1 uses a portrait phone canvas with FIT scaling (letterboxed elsewhere). One-handed portrait play fits "playable in short sessions"; revisit if the side-scrolling camera direction demands landscape.
+
+### 2026-07-05 — Resume via title screen
+
+Reopening the app shows the title with a single **Continue** button (labeled **Begin** with no save) that drops straight into the saved scene. Satisfies both "one button" and "resumes at the last scene" from the brief. Finishing the demo returns to the title but keeps the save.
+
+### 2026-07-05 — Portal reveal rule
+
+The wall counts as one of the "at least two things": `shouldRevealPortal` fires when 2 of {poster, desk, wall-touched} are set and the player taps the wall. Pure function in `src/systems/story.ts`, unit-tested.
+
 ### 2026-07-05 — Stack: TypeScript + Phaser 3 + Vite (supersedes Swift/SpriteKit)
 
 **Decision:** Build in TypeScript with Phaser 3, bundled by Vite. The original brief (`strange_worlds_CLAUDE.md`) specified Swift/SwiftUI/SpriteKit.
