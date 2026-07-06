@@ -3,6 +3,7 @@ export const FLAGS = {
   desk: 'bedroom.desk',
   wallTouched: 'bedroom.wall-touched',
   portalRevealed: 'bedroom.portal-revealed',
+  summit: 'fantasy.summit-reached',
 } as const;
 
 const BEDROOM_INTERACTIONS: readonly string[] = [FLAGS.poster, FLAGS.desk, FLAGS.wallTouched];

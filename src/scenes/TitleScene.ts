@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { autoplay } from '../systems/autoplay';
 import { LEVEL_INFO, LEVELS, progress } from '../systems/progress';
 import { makeButton } from '../ui/menu';
 import { ensureTextures } from './textures';
@@ -91,6 +92,35 @@ export class TitleScene extends Phaser.Scene {
           }, 0, 15);
         });
       }
+    }
+
+    // dev/demo: the game plays itself with visible ghost taps
+    this.add
+      .text(width / 2, height * 0.93, '▸ watch it play itself', {
+        fontFamily: 'Georgia, serif',
+        fontSize: '14px',
+        fontStyle: 'italic',
+        color: '#8f86ad',
+      })
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true })
+      .on(
+        'pointerdown',
+        (_p: Phaser.Input.Pointer, _x: number, _y: number, e: Phaser.Types.Input.EventData) => {
+          e.stopPropagation();
+          progress.newGame();
+          autoplay.start();
+          this.startScene('Bedroom');
+        },
+      );
+
+    // arriving with ?autoplay: begin a fresh scripted run automatically
+    if (autoplay.enabled) {
+      this.time.delayedCall(1400, () => {
+        if (!autoplay.enabled) return;
+        progress.newGame();
+        this.startScene('Bedroom');
+      });
     }
 
     this.cameras.main.fadeIn(900, 14, 13, 22);

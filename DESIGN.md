@@ -4,6 +4,31 @@ Living document. Newest decisions at the top of the log. Open questions at the b
 
 ---
 
+## Game outline (living plan)
+
+### Story arc — three acts, chapters as levels
+
+Act 1 — **The Door** (done): furious about the move, she trashes her room and finds the portal.
+Act 2 — **The Other Side**: each chapter is one emotion she works through, one landscape, one gentle challenge:
+1. *The Falls* (current) — wonder. Arrival at the turquoise cascades; challenge: climb the cliff for a vantage view; reveal: a distant tower past the falls.
+2. *The Tower* (next) — longing. Journey toward the tower glimpsed from the summit; challenge: crossing (stepping stones / floating islands).
+3. *TBD* — grief/acceptance beats; candidates: a dark forest that rearranges itself, a mirror lake, a storm she must calm rather than fight.
+Act 3 — **The Way Back**: she returns home changed; the room is the same but she is not.
+
+### Challenge pattern
+
+Every chapter = explore → notice the goal → light challenge → story beat. No fail states: setbacks are gentle (a slip costs one ledge, never a restart). Challenges favour traversal and observation over reflexes.
+
+### How goals are conveyed (decision)
+
+Diegetically, never with quest text: a glint/wisp of light marks the destination, and her inner voice gives at most one short line ("Something glints at the top of that cliff."). No scrolls, no objective HUD. If a player wanders, the world nudges (sparkle pulses, reeds lean) rather than instructs.
+
+### Auto-play (dev + demo feature)
+
+`src/systems/autoplay.ts` simulates a user playing: it dispatches real mouse events at the canvas (same input pipeline as a human tap) following a per-scene script, with a visible ghost-cursor ring at each click. Enabled via the title-screen "watch it play itself" button or `?autoplay` URL param; an AUTO chip on screen stops it. Purpose: development demos today, adversarial/regression playthroughs later.
+
+---
+
 ## Decision log
 
 ### 2026-07-05 — Game-life management: run vs. unlocked progress (save v2)

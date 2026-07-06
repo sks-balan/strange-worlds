@@ -23,8 +23,14 @@ export class Player extends Phaser.GameObjects.Container {
     scene.add.existing(this);
   }
 
+  private busy = false;
+
   get isMoving(): boolean {
     return this.targetX !== null;
+  }
+
+  get isBusy(): boolean {
+    return this.busy;
   }
 
   face(directionX: number): void {
@@ -32,8 +38,54 @@ export class Player extends Phaser.GameObjects.Container {
   }
 
   walkTo(targetX: number, onArrive?: () => void): void {
+    if (this.busy) return;
     this.targetX = targetX;
     this.onArrive = onArrive;
+  }
+
+  /** A scramble up (or down) to a ledge: two-phase arc, feet land on target. */
+  climbTo(targetX: number, targetY: number, onArrive?: () => void): void {
+    if (this.busy) return;
+    this.halt();
+    this.busy = true;
+    this.sprite.setFlipX(targetX < this.x);
+    this.sprite.setTexture('girl-walk-a');
+    const peakY = Math.min(this.y, targetY) - 26;
+    this.scene.tweens.chain({
+      targets: this,
+      tweens: [
+        { x: (this.x + targetX) / 2, y: peakY, duration: 300, ease: 'Quad.easeOut' },
+        { x: targetX, y: targetY, duration: 260, ease: 'Quad.easeIn' },
+      ],
+      onComplete: () => {
+        this.busy = false;
+        this.sprite.setTexture('girl-idle');
+        onArrive?.();
+      },
+    });
+  }
+
+  /** A failed climb: she lunges, the hold gives way, she drops back. */
+  slipTo(towardX: number, towardY: number, backX: number, backY: number, onDone?: () => void): void {
+    if (this.busy) return;
+    this.halt();
+    this.busy = true;
+    this.sprite.setFlipX(towardX < this.x);
+    this.sprite.setTexture('girl-walk-b');
+    const peakY = Math.min(this.y, towardY) - 6;
+    this.scene.tweens.chain({
+      targets: this,
+      tweens: [
+        { x: (this.x + towardX) / 2, y: peakY + 14, duration: 320, ease: 'Quad.easeOut' },
+        { angle: this.x < towardX ? -9 : 9, duration: 130 },
+        { x: backX, y: backY, angle: 0, duration: 460, ease: 'Bounce.easeOut' },
+      ],
+      onComplete: () => {
+        this.busy = false;
+        this.sprite.setTexture('girl-idle');
+        onDone?.();
+      },
+    });
   }
 
   halt(): void {
@@ -44,6 +96,7 @@ export class Player extends Phaser.GameObjects.Container {
 
   /** Call from the scene's update() every frame. */
   update(delta: number): void {
+    if (this.busy) return; // a climb/slip tween owns the body right now
     const dt = Math.min(delta, 50) / 1000; // clamp huge deltas (tab wake-up)
     if (this.targetX === null) {
       this.stridePhase = 0;

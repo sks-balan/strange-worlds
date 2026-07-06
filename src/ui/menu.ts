@@ -62,8 +62,9 @@ export function attachGameMenu(scene: Phaser.Scene, level: LevelKey): void {
     .circle(w - 32, 34, 19, 0x0e0d16, 0.55)
     .setStrokeStyle(1, GLOW, 0.45)
     .setDepth(50)
+    .setScrollFactor(0)
     .setInteractive({ useHandCursor: true });
-  const glyph = scene.add.graphics().setDepth(50);
+  const glyph = scene.add.graphics().setDepth(50).setScrollFactor(0);
   glyph.lineStyle(2, INK, 0.9);
   for (let i = -1; i <= 1; i += 1) {
     glyph.lineBetween(w - 40, 34 + i * 5.5, w - 24, 34 + i * 5.5);

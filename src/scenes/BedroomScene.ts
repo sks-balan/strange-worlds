@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { Player } from '../entities/Player';
+import { autoplay } from '../systems/autoplay';
 import { progress } from '../systems/progress';
 import { FLAGS, shouldRevealPortal } from '../systems/story';
 import { showLine } from '../ui/dialogue';
@@ -56,6 +57,14 @@ export class BedroomScene extends Phaser.Scene {
 
     attachGameMenu(this, 'Bedroom');
     this.cameras.main.fadeIn(700, 14, 13, 22);
+
+    // scripted playthrough: poster → desk → wall (reveal) → wall (enter)
+    autoplay.script(this, [
+      { delay: 1800, x: this.cx + 122 * sp, y: this.floorY - 118 },
+      { delay: 3600, x: this.cx - 100 * sp, y: this.floorY - 28 },
+      { delay: 3800, x: this.cx, y: this.floorY - 64 },
+      { delay: 3600, x: this.cx, y: this.floorY - 64 },
+    ]);
   }
 
   override update(_time: number, delta: number): void {

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { BedroomScene } from './scenes/BedroomScene';
 import { FantasyScene } from './scenes/FantasyScene';
 import { TitleScene } from './scenes/TitleScene';
+import { autoplay } from './systems/autoplay';
 import { progress } from './systems/progress';
 
 // Base design size (portrait phone). EXPAND grows the game world to match the
@@ -11,6 +12,10 @@ export const BASE_WIDTH = 390;
 export const BASE_HEIGHT = 844;
 
 progress.load();
+
+if (new URLSearchParams(window.location.search).has('autoplay')) {
+  autoplay.start();
+}
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
