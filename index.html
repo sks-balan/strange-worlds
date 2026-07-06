@@ -16,13 +16,23 @@
         background: #0e0d16;
         overflow: hidden;
       }
+      /* NOTE: fixed inset-0 body kills iOS Safari rubber-band scrolling and
+         keeps the game glued to the visual viewport on all devices */
+      body {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        touch-action: none;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
       #game {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: absolute;
+        inset: 0;
       }
       #game canvas {
+        display: block;
         touch-action: none;
       }
       /* NOTE: the girl's inner voice lives in the DOM, not the canvas — crisper
