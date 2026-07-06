@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { Player } from '../entities/Player';
-import { gameState } from '../systems/state';
+import { progress } from '../systems/progress';
 import { showLine } from '../ui/dialogue';
+import { attachGameMenu } from '../ui/menu';
 import { tapMarker } from './effects';
 import { ensureTextures } from './textures';
 
@@ -38,7 +39,7 @@ export class FantasyScene extends Phaser.Scene {
 
   create(): void {
     ensureTextures(this);
-    gameState.enterScene('Fantasy');
+    progress.enterScene('Fantasy');
     this.ending = false;
 
     const { width: w, height: h } = this.scale;
@@ -57,6 +58,7 @@ export class FantasyScene extends Phaser.Scene {
       this.player.walkTo(target);
     });
 
+    attachGameMenu(this, 'Fantasy');
     this.cameras.main.fadeIn(1400, 230, 230, 255);
     this.time.delayedCall(1700, () => showLine('...where am I?'));
   }

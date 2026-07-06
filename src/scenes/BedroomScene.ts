@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import { Player } from '../entities/Player';
-import { gameState } from '../systems/state';
+import { progress } from '../systems/progress';
 import { FLAGS, shouldRevealPortal } from '../systems/story';
 import { showLine } from '../ui/dialogue';
+import { attachGameMenu } from '../ui/menu';
 import { tapMarker } from './effects';
 import { ensureTextures } from './textures';
 
@@ -24,7 +25,7 @@ export class BedroomScene extends Phaser.Scene {
 
   create(): void {
     ensureTextures(this);
-    gameState.enterScene('Bedroom');
+    progress.enterScene('Bedroom');
     this.transitioning = false;
     this.deskItems = [];
 
@@ -49,10 +50,11 @@ export class BedroomScene extends Phaser.Scene {
       this.player.walkTo(target);
     });
 
-    if (gameState.has(FLAGS.portalRevealed)) {
+    if (progress.has(FLAGS.portalRevealed)) {
       this.showPortalSeam(true);
     }
 
+    attachGameMenu(this, 'Bedroom');
     this.cameras.main.fadeIn(700, 14, 13, 22);
   }
 
@@ -147,7 +149,7 @@ export class BedroomScene extends Phaser.Scene {
     g.fillRect(deskL + 52, floorY - 26, 18, 3);
     const itemColors = [0x9df0e8, 0xd8cfe8, 0xc98f8f];
     itemColors.forEach((color, i) => {
-      if (gameState.has(FLAGS.desk)) {
+      if (progress.has(FLAGS.desk)) {
         // she already swept the desk — the items stay where they fell
         this.add
           .rectangle(deskL - 32 - i * 26, floorY + 28 + i * 22, 13, 9, color)
@@ -231,8 +233,8 @@ export class BedroomScene extends Phaser.Scene {
   // MARK: - Interactions
 
   private onPoster(): void {
-    if (!gameState.has(FLAGS.poster)) {
-      gameState.setFlag(FLAGS.poster);
+    if (!progress.has(FLAGS.poster)) {
+      progress.setFlag(FLAGS.poster);
       showLine('My old poster. It looks wrong on these walls.');
     } else {
       showLine('It came all this way just to feel out of place. Same.');
@@ -240,8 +242,8 @@ export class BedroomScene extends Phaser.Scene {
   }
 
   private onDesk(): void {
-    if (!gameState.has(FLAGS.desk)) {
-      gameState.setFlag(FLAGS.desk);
+    if (!progress.has(FLAGS.desk)) {
+      progress.setFlag(FLAGS.desk);
       showLine("I didn't ask for any of this!");
       this.cameras.main.shake(180, 0.006);
       this.deskItems.forEach((item, i) => {
@@ -260,17 +262,17 @@ export class BedroomScene extends Phaser.Scene {
   }
 
   private onWall(): void {
-    if (gameState.has(FLAGS.portalRevealed)) {
+    if (progress.has(FLAGS.portalRevealed)) {
       this.enterPortal();
       return;
     }
-    if (shouldRevealPortal(gameState.flags)) {
-      gameState.setFlag(FLAGS.portalRevealed);
+    if (shouldRevealPortal(progress.flags)) {
+      progress.setFlag(FLAGS.portalRevealed);
       this.showPortalSeam(false);
       return;
     }
-    if (!gameState.has(FLAGS.wallTouched)) {
-      gameState.setFlag(FLAGS.wallTouched);
+    if (!progress.has(FLAGS.wallTouched)) {
+      progress.setFlag(FLAGS.wallTouched);
     }
     showLine('There is something behind this wall. Like a held breath.');
   }

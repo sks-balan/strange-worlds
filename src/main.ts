@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { BedroomScene } from './scenes/BedroomScene';
 import { FantasyScene } from './scenes/FantasyScene';
 import { TitleScene } from './scenes/TitleScene';
-import { gameState } from './systems/state';
+import { progress } from './systems/progress';
 
 // Base design size (portrait phone). EXPAND grows the game world to match the
 // device aspect ratio, so there is never letterboxing — scenes must lay
@@ -10,7 +10,7 @@ import { gameState } from './systems/state';
 export const BASE_WIDTH = 390;
 export const BASE_HEIGHT = 844;
 
-gameState.load();
+progress.load();
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -29,7 +29,7 @@ const game = new Phaser.Game({
 });
 
 // Re-lay-out the active scene when the viewport changes (rotation, browser
-// chrome collapsing, window resize). Scenes are stateless beyond gameState,
+// chrome collapsing, window resize). Scenes are stateless beyond progress,
 // so a restart is safe and much simpler than per-object reflow.
 let resizeTimer: ReturnType<typeof setTimeout> | undefined;
 game.scale.on(Phaser.Scale.Events.RESIZE, () => {

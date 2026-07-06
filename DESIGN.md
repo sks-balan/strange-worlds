@@ -6,6 +6,10 @@ Living document. Newest decisions at the top of the log. Open questions at the b
 
 ## Decision log
 
+### 2026-07-05 — Game-life management: run vs. unlocked progress (save v2)
+
+`src/systems/progress.ts` owns the player's game life. The save (v2) separates the **active run** (current scene + story flags) from **unlocked chapters** (every level ever reached — never shrinks). Consequences: *Restart level* clears only that level's flags (flags are namespaced `bedroom.*`, `fantasy.*`); *New game* resets the run but keeps chapters unlocked; the title screen offers Continue / New game / chapter select, and an in-game ≡ menu offers Resume / Restart level / Exit to title. v1 saves migrate automatically (unlocks inferred from the saved scene).
+
 ### 2026-07-05 — Fantasy-world palette: sunset warmth over glowing turquoise water
 
 Themed to the user's reference painting: warm orange/pink sunset sky with a huge pale sun, purple cliffs with sunset-lit edges, autumn-rust foliage on every ledge, and glowing turquoise cascades (soft band + bright core + falling streak particles + mist) into a luminous pool. The girl walks a dark shore strip in the foreground, silhouetted against the water light. The real world (bedroom) intentionally stays dark and desaturated so the portal contrast lands. Palette constants live at the top of `src/scenes/FantasyScene.ts`.

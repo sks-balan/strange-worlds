@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { gameState } from '../systems/state';
+import { LEVEL_INFO, LEVELS, progress } from '../systems/progress';
+import { makeButton } from '../ui/menu';
 import { ensureTextures } from './textures';
 
 export class TitleScene extends Phaser.Scene {
@@ -31,7 +32,7 @@ export class TitleScene extends Phaser.Scene {
     });
 
     this.add
-      .text(width / 2, height * 0.3, 'STRANGE\nWORLDS', {
+      .text(width / 2, height * 0.26, 'STRANGE\nWORLDS', {
         fontFamily: 'Georgia, serif',
         fontSize: '52px',
         color: '#e8e3f5',
@@ -41,7 +42,7 @@ export class TitleScene extends Phaser.Scene {
       .setLetterSpacing(6);
 
     this.add
-      .text(width / 2, height * 0.41, 'a door where no door should be', {
+      .text(width / 2, height * 0.37, 'a door where no door should be', {
         fontFamily: 'Georgia, serif',
         fontSize: '15px',
         fontStyle: 'italic',
@@ -49,21 +50,13 @@ export class TitleScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    const label = gameState.hasSave ? 'Continue' : 'Begin';
-    const button = this.add
-      .rectangle(width / 2, height * 0.62, 190, 58, 0x241b3a)
-      .setStrokeStyle(1, 0x9df0e8, 0.5)
-      .setInteractive({ useHandCursor: true });
-    const buttonText = this.add
-      .text(width / 2, height * 0.62, label, {
-        fontFamily: 'Georgia, serif',
-        fontSize: '22px',
-        color: '#e8e3f5',
-      })
-      .setOrigin(0.5);
-
+    // primary action
+    const primaryLabel = progress.hasSave ? 'Continue' : 'Begin';
+    const primary = makeButton(this, width / 2, height * 0.52, 200, 58, primaryLabel, () => {
+      this.startScene(progress.hasSave ? progress.scene : 'Bedroom');
+    });
     this.tweens.add({
-      targets: [button, buttonText],
+      targets: [primary.zone, primary.label],
       alpha: { from: 1, to: 0.75 },
       duration: 1400,
       yoyo: true,
@@ -71,19 +64,47 @@ export class TitleScene extends Phaser.Scene {
       ease: 'Sine.easeInOut',
     });
 
-    button.on('pointerdown', () => {
-      if (this.starting) return;
-      this.starting = true;
-      const target = gameState.hasSave ? gameState.scene : 'Bedroom';
-      // NOTE: resetFX first — a fadeOut started while the fadeIn is still
-      // running is silently ignored and its completion event never fires
-      this.cameras.main.resetFX();
-      this.cameras.main.fadeOut(700, 14, 13, 22);
-      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-        this.scene.start(target);
-      });
-    });
+    if (progress.hasSave) {
+      // a fresh run — chapters already reached stay unlocked below
+      makeButton(this, width / 2, height * 0.52 + 76, 200, 50, 'New game', () => {
+        progress.newGame();
+        this.startScene('Bedroom');
+      }, 0, 18);
+
+      const unlocked = LEVELS.filter((l) => progress.unlocked.has(l));
+      if (unlocked.length > 0) {
+        this.add
+          .text(width / 2, height * 0.52 + 150, '— chapters —', {
+            fontFamily: 'Georgia, serif',
+            fontSize: '13px',
+            fontStyle: 'italic',
+            color: '#8f86ad',
+          })
+          .setOrigin(0.5);
+        const bw = 172;
+        const gap = 14;
+        const total = unlocked.length * bw + (unlocked.length - 1) * gap;
+        unlocked.forEach((level, i) => {
+          const x = width / 2 - total / 2 + bw / 2 + i * (bw + gap);
+          makeButton(this, x, height * 0.52 + 196, bw, 46, LEVEL_INFO[level].title, () => {
+            this.startScene(level);
+          }, 0, 15);
+        });
+      }
+    }
 
     this.cameras.main.fadeIn(900, 14, 13, 22);
+  }
+
+  private startScene(target: string): void {
+    if (this.starting) return;
+    this.starting = true;
+    // NOTE: resetFX first — a fadeOut started while the fadeIn is still
+    // running is silently ignored and its completion event never fires
+    this.cameras.main.resetFX();
+    this.cameras.main.fadeOut(700, 14, 13, 22);
+    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+      this.scene.start(target);
+    });
   }
 }
